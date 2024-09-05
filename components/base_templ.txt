@@ -1,0 +1,27 @@
+<head><title>
+</title><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><link rel=\"stylesheet\" type=\"text/css\" href=\"/css/output.css\"><script src=\"/js/htmx.min.js\"></script><script defer src=\"/js/alpine.min.js\"></script></head>
+<nav><a href=\"/\">Home</a> | <a href=\"/about/\">About</a> |</nav>
+<h1>
+</h1>
+<div>Footer</div>
+<!doctype html><html lang=\"en\">
+<body>
+</body></html>
+<div style=\"background-color: green;\">
+</div><div x-data=\"{ sidebar_open: true }\" class=\"relative z-10\" x-show=\"sidebar_open\" aria-labelledby=\"slide-over-title\" role=\"dialog\" aria-modal=\"true\"><!--\n            Background backdrop, show/hide based on slide-over state.\n\n            Entering: \"ease-in-out duration-500\"\n            From: \"opacity-0\"\n            To: \"opacity-100\"\n            Leaving: \"ease-in-out duration-500\"\n            From: \"opacity-100\"\n            To: \"opacity-0\"\n            --><div class=\"fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity\" :class=\"sidebar_open ? &#39;opacity-100 block&#39; : &#39;opacity-0&#39;\" aria-hidden=\"true\"></div><div class=\"fixed inset-0 overflow-hidden\"><div class=\"absolute inset-0 overflow-hidden\"><div class=\"pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10\"><!--\n                        Slide-over panel, show/hide based on slide-over state.\n\n                        Entering: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-full\"\n                        To: \"translate-x-0\"\n                        Leaving: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-0\"\n                        To: \"translate-x-full\"\n                        --><div class=\"pointer-events-auto w-screen max-w-md\" :class=\"sidebar_open ? &#39;translate-x-0&#39; : &#39;translate-x-full&#39;\"><div class=\"flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl\"><div class=\"px-4 sm:px-6\"><div class=\"flex items-start justify-between\"><h2 class=\"text-base font-semibold leading-6 text-gray-900\" id=\"slide-over-title\">Panel title</h2><div class=\"ml-3 flex h-7 items-center\"><button type=\"button\" class=\"relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2\" @click=\"sidebar_open = !sidebar_open\"><span class=\"absolute -inset-2.5\"></span> <span class=\"sr-only\">Close panel</span> <svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></div></div><div class=\"relative mt-6 flex-1 px-4 sm:px-6\">
+</div></div></div></div></div></div></div>
+<ul>
+<li><a href=\"
+\" class=\"hov\">
+ - 
+ (
+)</a></li>
+</ul>
+<h2>Interaction: 
+ - 
+</h2><ul>
+<li>
+ - 
+ - 
+</li>
+</ul>
