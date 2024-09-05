@@ -1,0 +1,15 @@
+package components
+
+templ header(title string) {
+    <h1>{ title }</h1>
+}
+
+templ footer() {
+    <div>Footer</div>
+}
+
+templ Home(content templ.Component) {
+    @header("Default Title")
+    @content
+    @footer()
+}
