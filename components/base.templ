@@ -4,7 +4,7 @@ import "mateo/pdb/cmd/models"
 
 var mainTitle string = "PIONEER case studies"
 
-templ head(title string) {
+templ head(title string, hook templ.Component) {
 	<head>
 		<title>{ title }</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -12,50 +12,124 @@ templ head(title string) {
 		<link rel="stylesheet" type="text/css" href="/css/output.css"/>
 		<script src="/js/htmx.min.js"></script>
 		<script defer src="/js/alpine.min.js"></script>
+		@hook
 	</head>
 }
 
-templ nav() {
-	<nav>
-		<a href="/">Home</a> |
-		<a href="/about/">About</a> |
-	</nav>
+templ nav(showInteractionButton bool) {
+	<header class="bg-white">
+		<nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+			<div class="flex lg:flex-1">
+				<a href="#" class="-m-1.5 p-1.5">
+					<span class="sr-only">Home</span>
+					<img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt=""/>
+				</a>
+			</div>
+			<div class="flex lg:hidden">
+				<button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+					<span class="sr-only">Open main menu</span>
+					<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+					</svg>
+				</button>
+			</div>
+			<div class="hidden lg:flex lg:gap-x-12">
+				<a href="/" class="text-sm font-semibold leading-6 text-gray-900">Home</a>
+				<a href="/about/" class="text-sm font-semibold leading-6 text-gray-900">About</a>
+			</div>
+			<div class="hidden lg:flex lg:flex-1 lg:justify-end">
+				if showInteractionButton {
+					<button
+						x-data
+						class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+						@click="() => {$store.interactions.open = true; console.log('asd');}"
+					>
+						Show interaction list
+					</button>
+				}
+			</div>
+		</nav>
+		<!-- Mobile menu, show/hide based on menu open state. -->
+		<div class="lg:hidden" role="dialog" aria-modal="true">
+			<!-- Background backdrop, show/hide based on slide-over state. -->
+			<div class="fixed inset-0 z-10"></div>
+			<div class="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+				<div class="flex items-center justify-between">
+					<a href="#" class="-m-1.5 p-1.5">
+						<span class="sr-only">Your Company</span>
+						<img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt=""/>
+					</a>
+					<button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+						<span class="sr-only">Close menu</span>
+						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+				<div class="mt-6 flow-root">
+					<div class="-my-6 divide-y divide-gray-500/10">
+						<div class="space-y-2 py-6">
+							<a href="/" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Home</a>
+							<a href="/about/" class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">About</a>
+						</div>
+						<div class="py-6">
+							<a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">Log in</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
 }
 
-templ header(title string) {
-	<h1>{ title }</h1>
-	@nav()
+templ header(showInteractionButton bool) {
+	@nav(showInteractionButton)
 }
 
 templ footer() {
 	<div>Footer</div>
 }
 
-templ base() {
+templ scripts() {
+	<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.store("interactions",{open:false});
+    });
+    </script>
+	{ children... }
+}
+
+type BaseConfig struct {
+	head templ.Component
+}
+
+templ base(config BaseConfig) {
 	<!DOCTYPE html>
-	<html lang="en">
-		@head(mainTitle)
-		<body>
+	<html lang="en" class="h-full">
+		@head(mainTitle, config.head)
+		<body class="h-full">
 			{ children... }
+			@scripts()
 		</body>
 	</html>
 }
 
-templ singleColumn() {
-	@base() {
+templ singleColumn(config BaseConfig) {
+	@base(config) {
 		{ children... }
 	}
 }
 
-templ sidebar(side templ.Component) {
-	@base() {
-		<div style="background-color: green;">
+templ sidebar(config BaseConfig, side templ.Component) {
+	@base(config) {
+		<div>
 			{ children... }
 		</div>
 		<div
-			x-data="{ sidebar_open: true }"
-			class="relative z-10"
-			x-show="sidebar_open"
+			x-data
+			class="relative transition-opacity ease-in-out duration-1000"
+			:class="{'invisible': !$store.interactions.open}"
+			x-transition.delay.1000ms
 			aria-labelledby="slide-over-title"
 			role="dialog"
 			aria-modal="true"
@@ -71,8 +145,8 @@ templ sidebar(side templ.Component) {
             To: "opacity-0"
             -->
 			<div
-				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-				:class="sidebar_open ? 'opacity-100 block' : 'opacity-0'"
+				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-1000"
+				:class="$store.interactions.open ? 'opacity-100 block' : 'opacity-0'"
 				aria-hidden="true"
 			></div>
 			<div class="fixed inset-0 overflow-hidden">
@@ -89,8 +163,8 @@ templ sidebar(side templ.Component) {
                         To: "translate-x-full"
                         -->
 						<div
-							class="pointer-events-auto w-screen max-w-md"
-							:class="sidebar_open ? 'translate-x-0' : 'translate-x-full'"
+							class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-1000 sm:duration-700"
+							:class="$store.interactions.open ? 'translate-x-0' : 'translate-x-full'"
 						>
 							<div class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
 								<div class="px-4 sm:px-6">
@@ -100,7 +174,7 @@ templ sidebar(side templ.Component) {
 											<button
 												type="button"
 												class="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-												@click="sidebar_open = !sidebar_open"
+												@click="$store.interactions.open = ! $store.interactions.open"
 											>
 												<span class="absolute -inset-2.5"></span>
 												<span class="sr-only">Close panel</span>
@@ -123,50 +197,262 @@ templ sidebar(side templ.Component) {
 	}
 }
 
-templ interactionList(interactions map[string]*models.Interaction) {
-	<ul>
-		for _, i := range interactions {
-			<li>
-				<a
-					href={ i.URL() }
-					class="hov"
-				>
-					{ i.P1 } - { i.P2 } ({ i.AssociatedPdbs() })
-				</a>
-			</li>
-		}
-	</ul>
+templ interactionList(interactions []*models.Interaction) {
+	<div class="px-4 sm:px-6 lg:px-8">
+		<div class="sm:flex sm:items-center">
+			<div class="sm:flex-auto">
+				<h1 class="text-base font-semibold leading-6 text-gray-900">Interactions</h1>
+				<p class="mt-2 text-sm text-gray-700">A table of placeholder stock market data that does not make any sense.</p>
+			</div>
+		</div>
+		<div class="mt-8 flow-root">
+			<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+				<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+					<table class="min-w-full divide-y divide-gray-300">
+						<thead>
+							<tr>
+								<th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Interactor 1</th>
+								<th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Interactor 2</th>
+								<th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">PDBs</th>
+								<th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+									<span class="sr-only">View</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-gray-200 bg-white">
+							for _, i := range interactions {
+								<tr>
+									<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P1 }</td>
+									<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P2 }</td>
+									<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{ i.AssociatedPdbs() }</td>
+									<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+										<a href={ i.URL() } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+									</td>
+								</tr>
+							}
+							<!-- More transactions... -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
-templ home(interactions map[string]*models.Interaction) {
-	@header("Main PDB list")
+templ pdbList(i *models.Interaction) {
+	<div class="mt-8 flow-root">
+		<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+			<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+				<table class="min-w-full divide-y divide-gray-300">
+					<thead>
+						<tr>
+							<th scope="col" class="whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">PDB ID</th>
+							<th scope="col" class="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">Aligned interactor</th>
+							<th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+								<span class="sr-only">View</span>
+							</th>
+							<th scope="col" class="relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0">
+								<span class="sr-only">View Pair</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody class="divide-y divide-gray-200 bg-white">
+						for _, pdb := range i.Pdbs {
+							<tr>
+								<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ pdb.PdbId }</td>
+								<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ pdb.AlignedProtein }</td>
+								<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+									<a href={ pdb.URL(i) } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+								</td>
+								<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+									<a href={ pdb.PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View Pair<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+								</td>
+							</tr>
+						}
+						<!-- More transactions... -->
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+}
+
+templ home(interactions []*models.Interaction) {
+	@header(false)
 	@interactionList(interactions)
-	@footer()
+}
+
+templ about() {
+	@header(false)
+	<h1>
+		PDB viewer
+	</h1>
+	<p>This is a simple web tool that allows the visualization of interactions from AlphaFold3 and PIONEER2.0.</p>
+	<p>Intended mainly as an internal tool, I published this in order to have an interactive place to show our case studies for closer ispection.</p>
 }
 
 templ interaction(i *models.Interaction) {
-	@header("Main PDB list | Interaction View")
-	<h2>Interaction: { i.P1 } - { i.P2 }</h2>
-	<ul>
-		for _, pdb := range i.Pdbs {
-			<li>{ pdb.PdbId } - { pdb.AlignedProtein } - { pdb.Filename }</li>
-		}
-	</ul>
+	@header(true)
+	<div class="px-4 sm:px-6 lg:px-8">
+		<div class="sm:flex sm:items-center">
+			<div class="sm:flex-auto">
+				<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 }</h1>
+				<p class="mt-2 text-sm text-gray-700">This table shows all of the co-complexes for this interaction. For all cases where there are predictions from either model, we align the AF3 predicted structure with the PDB using a single chain as reference, that's the "aligned interactor" column below.</p>
+			</div>
+		</div>
+		@pdbList(i)
+	</div>
+}
+
+templ pdbPairIncludes() {
+	<script src="https://unpkg.com/ngl@2.3.1/dist/ngl.js"></script>
+	<script defer src="/js/pioneer.js"></script>
+	<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var pdb_display_a = new PdbDisplay("viewport-a", "pdb-filename-a", true);
+        var pdb_display_b = new PdbDisplay("viewport-b", "pdb-filename-b", true);
+    });    
+    </script>
+}
+
+templ pdbIncludes() {
+	<script src="https://unpkg.com/ngl@2.3.1/dist/ngl.js"></script>
+	<script defer src="/js/pioneer.js"></script>
+	<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var pdb_display = new PdbDisplay("viewport", "pdb-filename", true);
+    });    
+    </script>
+}
+
+templ pdbViewport(pdb *models.Pdb, viewport_id string) {
+	<div class="flex p-6 items-center text-align-center"><p>Aligned to { pdb.AlignedProtein }</p></div>
+	<div class="flex items-center justify-between p-6" aria-label="Global">
+		<span class="flex flex-1 isolate rounded-md shadow-sm">
+			<button id={ viewport_id + "-toggle-struct-af3" } type="button" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">AF3 structure</button>
+			<button id={ viewport_id + "-toggle-struct-real" } type="button" class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Real Structure</button>
+			<button id={ viewport_id + "-toggle-pred-af3" } type="button" class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">AF3 Predictions</button>
+			<button id={ viewport_id + "-toggle-pred-pio" } type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">PIONEER Predictions</button>
+		</span>
+		<span class="hidden lg:flex lg:gap-x-12">
+			<button id={ viewport_id + "-make-image" } type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Save Image</button>
+		</span>
+	</div>
+	<div
+		id={ viewport_id }
+		class="w-full h-[calc(80dvh)] p-6"
+	></div>
+	@pdbBadges()
+}
+
+templ pdbBadges() {
+	<div class="flex mx-6">
+		<span class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200">
+			<svg class="h-2 w-2" style="fill: #F8981D;" viewBox="0 0 6 6" aria-hidden="true">
+				<circle cx="3" cy="3" r="3"></circle>
+			</svg>
+			Target
+		</span>
+		<span class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200">
+			<svg class="h-2 w-2" style="fill: #006699;" viewBox="0 0 6 6" aria-hidden="true">
+				<circle cx="3" cy="3" r="3"></circle>
+			</svg>
+			Partner
+		</span>
+		<span class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200">
+			<svg class="h-2 w-2" style="fill: #6EB43F;" viewBox="0 0 6 6" aria-hidden="true">
+				<circle cx="3" cy="3" r="3"></circle>
+			</svg>
+			Target AF3
+		</span>
+		<span class="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200">
+			<svg class="h-2 w-2" style="fill: #EF4035;" viewBox="0 0 6 6" aria-hidden="true">
+				<circle cx="3" cy="3" r="3"></circle>
+			</svg>
+			Partner AF3
+		</span>
+	</div>
+}
+
+templ pdbDisplay(i *models.Interaction, pdb *models.Pdb) {
+	@header(true)
+	<div class="px-4 sm:px-6 lg:px-8">
+		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 }</h1>
+		@pdbViewport(pdb, "viewport")
+	</div>
+	@pdbDisplayScript(pdb, "pdb-filename")
+}
+
+templ pdbPairDisplay(i *models.Interaction, pdb_a, pdb_b *models.Pdb) {
+	@header(true)
+	<div class="px-4 sm:px-6 lg:px-8">
+		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 }</h1>
+		<div class="flex">
+			<div class="w-1/2">
+				@pdbViewport(pdb_a, "viewport-a")
+			</div>
+			<div class="w-1/2">
+				@pdbViewport(pdb_b, "viewport-b")
+			</div>
+		</div>
+	</div>
+	@pdbDisplayScript(pdb_a, "pdb-filename-a")
+	@pdbDisplayScript(pdb_b, "pdb-filename-b")
+}
+
+templ pdbDisplayScript(pdb *models.Pdb, divid string) {
+	<div id={ divid } class="hidden" data-filename={ templ.JSONString(pdb.Filename) }></div>
+}
+
+func emptyBaseConfig() BaseConfig {
+	return BaseConfig{
+		head: templ.NopComponent,
+	}
+}
+
+func pdbBaseConfig() BaseConfig {
+	return BaseConfig{
+		head: pdbIncludes(),
+	}
+}
+
+func pdbPairBaseConfig() BaseConfig {
+	return BaseConfig{
+		head: pdbPairIncludes(),
+	}
 }
 
 // public components
-templ Home(interactions map[string]*models.Interaction) {
-	@singleColumn() {
+templ Home(interactions []*models.Interaction) {
+	@singleColumn(emptyBaseConfig()) {
 		@home(interactions)
 	}
 }
 
-templ exampleSide(interactions map[string]*models.Interaction) {
+templ About() {
+	@singleColumn(emptyBaseConfig()) {
+		@about()
+	}
+}
+
+templ exampleSide(interactions []*models.Interaction) {
 	@interactionList(interactions)
 }
 
-templ Interaction(i *models.Interaction, interactions map[string]*models.Interaction) {
-	@sidebar(exampleSide(interactions)) {
+templ Interaction(i *models.Interaction, interactions []*models.Interaction) {
+	@sidebar(emptyBaseConfig(), exampleSide(interactions)) {
 		@interaction(i)
+	}
+}
+
+templ Pdb(i *models.Interaction, pdb *models.Pdb, interactions []*models.Interaction) {
+	@sidebar(pdbBaseConfig(), exampleSide(interactions)) {
+		@pdbDisplay(i, pdb)
+	}
+}
+
+templ PdbPair(i *models.Interaction, pdb_a, pdb_b *models.Pdb, interactions []*models.Interaction) {
+	@sidebar(pdbPairBaseConfig(), exampleSide(interactions)) {
+		@pdbPairDisplay(i, pdb_a, pdb_b)
 	}
 }

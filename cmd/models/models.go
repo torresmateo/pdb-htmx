@@ -24,6 +24,13 @@ func newPdb(pdb, aligned_protein, filename string) *Pdb {
 	}
 }
 
+func (p *Pdb) URL(i *Interaction) templ.SafeURL {
+	return templ.SafeURL("/pdb/" + i.P1 + "_" + i.P2 + "/" + p.PdbId + "/" + p.AlignedProtein)
+}
+func (p *Pdb) PairURL(i *Interaction) templ.SafeURL {
+	return templ.SafeURL("/pdbpair/" + i.P1 + "_" + i.P2 + "/" + p.PdbId)
+}
+
 type Interaction struct {
 	P1   string
 	P2   string
