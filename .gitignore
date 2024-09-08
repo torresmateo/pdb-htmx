@@ -27,4 +27,5 @@ go.work.sum
 /tmp/
 /dist/
 /node_modules/
-/pdb/
+/static/pdb/
+/static/prediction-metadata/

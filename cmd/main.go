@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,19 @@ func (is interactionSlice) Swap(i, j int) {
 	is[i], is[j] = is[j], is[i]
 }
 func (is interactionSlice) Less(i, j int) bool {
-	return len(is[i].Pdbs) < len(is[j].Pdbs)
+	if len(is[i].Pdbs) < len(is[j].Pdbs) {
+		return true
+	} else if len(is[i].Pdbs) == len(is[j].Pdbs) {
+		p1cmp := strings.Compare(is[i].P1, is[j].P1)
+		if p1cmp == -1 {
+			return true
+		} else if p1cmp == 0 {
+			if strings.Compare(is[i].P2, is[j].P2) == -1 {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 var interactions map[string]*models.Interaction
@@ -46,7 +59,7 @@ func displayInteractionsStats() {
 
 func main() {
 	interactions = make(map[string]*models.Interaction)
-	models.InitInteractions("./pdb", interactions)
+	models.InitInteractions("./static/pdb", interactions)
 	sortedInteractions = make(interactionSlice, 0, len(interactions))
 	for _, i := range interactions {
 		sortedInteractions = append(sortedInteractions, i)
@@ -54,7 +67,8 @@ func main() {
 	sort.Sort(sortedInteractions)
 	displayInteractionsStats()
 	e := echo.New()
-	e.Static("/pdb", "pdb")
+	e.Static("/pdb", "static/pdb")
+	e.Static("/predmeta", "static/prediction-metadata")
 	e.Static("/css", "static/css")
 	e.Static("/js", "static/js")
 	e.Use(middleware.Logger())
