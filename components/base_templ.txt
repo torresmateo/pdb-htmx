@@ -10,10 +10,19 @@
 <body class=\"h-full\">
 </body></html>
 <div>
-</div><div x-data class=\"relative transition-opacity ease-in-out duration-1000\" :class=\"{&#39;invisible&#39;: !$store.interactions.open}\" x-transition.delay.1000ms aria-labelledby=\"slide-over-title\" role=\"dialog\" aria-modal=\"true\"><!--\n            Background backdrop, show/hide based on slide-over state.\n\n            Entering: \"ease-in-out duration-500\"\n            From: \"opacity-0\"\n            To: \"opacity-100\"\n            Leaving: \"ease-in-out duration-500\"\n            From: \"opacity-100\"\n            To: \"opacity-0\"\n            --><div class=\"fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-1000\" :class=\"$store.interactions.open ? &#39;opacity-100 block&#39; : &#39;opacity-0&#39;\" aria-hidden=\"true\"></div><div class=\"fixed inset-0 overflow-hidden\"><div class=\"absolute inset-0 overflow-hidden\"><div class=\"pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10\"><!--\n                        Slide-over panel, show/hide based on slide-over state.\n\n                        Entering: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-full\"\n                        To: \"translate-x-0\"\n                        Leaving: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-0\"\n                        To: \"translate-x-full\"\n                        --><div class=\"pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-1000 sm:duration-700\" :class=\"$store.interactions.open ? &#39;translate-x-0&#39; : &#39;translate-x-full&#39;\"><div class=\"flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl\"><div class=\"px-4 sm:px-6\"><div class=\"flex items-start justify-between\"><h2 class=\"text-base font-semibold leading-6 text-gray-900\" id=\"slide-over-title\">Panel title</h2><div class=\"ml-3 flex h-7 items-center\"><button type=\"button\" class=\"relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2\" @click=\"$store.interactions.open = ! $store.interactions.open\"><span class=\"absolute -inset-2.5\"></span> <span class=\"sr-only\">Close panel</span> <svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></div></div><div class=\"relative mt-6 flex-1 px-4 sm:px-6\">
+</div><div x-data class=\"relative transition-opacity ease-in-out duration-500\" :class=\"{&#39;invisible&#39;: !$store.interactions.open}\" aria-labelledby=\"slide-over-title\" role=\"dialog\" aria-modal=\"true\"><!--\n            Background backdrop, show/hide based on slide-over state.\n\n            Entering: \"ease-in-out duration-500\"\n            From: \"opacity-0\"\n            To: \"opacity-100\"\n            Leaving: \"ease-in-out duration-500\"\n            From: \"opacity-100\"\n            To: \"opacity-0\"\n            --><div class=\"fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-500\" :class=\"$store.interactions.open ? &#39;opacity-100 block&#39; : &#39;opacity-0&#39;\" aria-hidden=\"true\"></div><div class=\"fixed inset-0 overflow-hidden\"><div class=\"absolute inset-0 overflow-hidden\"><div class=\"pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10\"><!--\n                        Slide-over panel, show/hide based on slide-over state.\n\n                        Entering: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-full\"\n                        To: \"translate-x-0\"\n                        Leaving: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-0\"\n                        To: \"translate-x-full\"\n                        --><div class=\"pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700\" :class=\"$store.interactions.open ? &#39;translate-x-0&#39; : &#39;translate-x-full&#39;\"><div class=\"flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl\"><div class=\"px-4 sm:px-6\"><div class=\"flex items-start justify-between\"><h2 class=\"text-base font-semibold leading-6 text-gray-900\" id=\"slide-over-title\">
+</h2><div class=\"ml-3 flex h-7 items-center\"><button type=\"button\" class=\"relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2\" @click=\"$store.interactions.open = ! $store.interactions.open\"><span class=\"absolute -inset-2.5\"></span> <span class=\"sr-only\">Close panel</span> <svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></div></div><div class=\"relative mt-6 flex-1 px-4 sm:px-6 overflow-y-auto\">
 </div></div></div></div></div></div></div>
 <tr>
-<td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
+<td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-teal-600\"></td><td colspan=\"2\" class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-teal-600\">
+</td><td class=\"relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-teal-600\"><a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View<span class=\"sr-only\">PDB</span></a></td>
+<td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900 bg-gray-50\"></td><td colspan=\"2\" class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900 bg-gray-50\">
+</td><td class=\"relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-gray-50\"><a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View<span class=\"sr-only\">PDB</span></a></td>
+</tr>
+<tr>
+<td id=\"active-interaction\" class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
 </td><td class=\"relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-green-600\"><a href=\"
@@ -27,8 +36,20 @@
 \" class=\"text-indigo-600 hover:text-indigo-900\">View<span class=\"sr-only\">
  - 
 </span></a></td>
+ 
+<td id=\"active-interaction\" class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600\">
+</td><td class=\"relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-green-600\"><a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></td>
+<td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-500\">
+</td><td class=\"relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0\"><a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></td>
 </tr>
-<div class=\"px-4 sm:px-6 lg:px-8\"><div class=\"sm:flex sm:items-center\"><div class=\"sm:flex-auto\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interactions</h1><p class=\"mt-2 text-sm text-gray-700\">A table of placeholder stock market data that does not make any sense.</p></div></div><div class=\"mt-8 flow-root\"><div class=\"-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8\"><div class=\"inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8\"><table class=\"min-w-full divide-y divide-gray-300\"><thead><tr><th scope=\"col\" class=\"whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0\">Interactor 1</th><th scope=\"col\" class=\"whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900\">Interactor 2</th><th scope=\"col\" class=\"whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900\">PDBs</th><th scope=\"col\" class=\"relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0\"><span class=\"sr-only\">View</span></th></tr></thead> <tbody class=\"divide-y divide-gray-200 bg-white\">
+<script>\n            document.addEventListener(\"DOMContentLoaded\", function() {\n                var active_row = document.getElementById(\"active-interaction\").scrollIntoView();\n            });    \n        </script>
+<div class=\"px-4 sm:px-6 lg:px-8\"><div class=\"sm:flex sm:items-center\"><div class=\"sm:flex-auto\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interactions</h1><p class=\"mt-2 text-sm text-gray-700\">A table of placeholder stock market data that does not make any sense.</p></div></div><div class=\"mt-8 flow-root\"><div class=\"-mx-4 -my-2 overflow-x-auto flex flex-col sm:-mx-6 lg:-mx-8\"><div class=\"min-w-70 py-2 align-middle sm:px-6 lg:px-8 flex-auto overflow-y-scroll\"><table class=\"min-w-full divide-y divide-gray-300\"><thead><tr><th scope=\"col\" class=\"whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0\">Interactor 1</th><th scope=\"col\" class=\"whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900\">Interactor 2</th><th scope=\"col\" class=\"whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900\">PDBs</th><th scope=\"col\" class=\"relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0\"><span class=\"sr-only\">View</span></th></tr></thead> <tbody class=\"divide-y divide-gray-200 bg-white\">
 </tbody></table></div></div></div></div>
 <div class=\"mt-8 flow-root\"><div class=\"-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8\"><div class=\"inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8\"><table class=\"min-w-full divide-y divide-gray-300\"><thead><tr><th scope=\"col\" class=\"whitespace-nowrap py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0\">PDB ID</th><th scope=\"col\" class=\"whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900\">Aligned interactor</th><th scope=\"col\" class=\"relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0\"><span class=\"sr-only\">View</span></th><th scope=\"col\" class=\"relative whitespace-nowrap py-3.5 pl-3 pr-4 sm:pr-0\"><span class=\"sr-only\">View Pair</span></th></tr></thead> <tbody class=\"divide-y divide-gray-200 bg-white\">
 <tr><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
@@ -40,7 +61,7 @@
 \" class=\"text-indigo-600 hover:text-indigo-900\">View Pair<span class=\"sr-only\">
  - 
 </span></a></td></tr>
-<!-- More transactions... --></tbody></table></div></div></div>
+</tbody></table></div></div></div>
 <h1>PDB viewer</h1><p>This is a simple web tool that allows the visualization of interactions from AlphaFold3 and PIONEER2.0.</p><p>Intended mainly as an internal tool, I published this in order to have an interactive place to show our case studies for closer ispection.</p>
 <div class=\"px-4 sm:px-6 lg:px-8\"><div class=\"sm:flex sm:items-center\"><div class=\"sm:flex-auto\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
  - 
@@ -66,21 +87,25 @@
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td></tr></tbody></table></div></div></div>
-<div class=\"flex p-6 items-center text-align-center\"><p>Aligned to 
+<div class=\"flex px-6 items-center text-align-center\"><p>Aligned to 
  
 <a href=\"
 \" class=\"text-indigo-600 hover:text-indigo-900\">View</a>
 </p></div>
 <!--div class=\"flex items-center justify-between p-6\" aria-label=\"Global\">\n\t\t<span class=\"flex flex-1 isolate rounded-md shadow-sm\">\n\t\t\t<button id={ viewport_id + \"-toggle-struct-af3\" } type=\"button\" class=\"relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">AF3 structure</button>\n\t\t\t<button id={ viewport_id + \"-toggle-struct-real\" } type=\"button\" class=\"relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Real Structure</button>\n\t\t\t<button id={ viewport_id + \"-toggle-pred-af3\" } type=\"button\" class=\"relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">AF3 Predictions</button>\n\t\t\t<button id={ viewport_id + \"-toggle-pred-pio\" } type=\"button\" class=\"relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">PIONEER Predictions</button>\n\t\t</span>\n\t\t<span class=\"hidden lg:flex lg:gap-x-12\">\n\t\t\t<button id={ viewport_id + \"-make-image\" } type=\"button\" class=\"relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Save Image</button>\n\t\t</span>\n\t</div--><div id=\"
-\" class=\"w-full h-[calc(80dvh)] p-6\"></div>
+\" class=\"w-full h-[calc(65dvh)] p-6\"></div>
 <div class=\"flex mx-6\"><span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #F8981D;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Target</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #006699;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Partner</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #6EB43F;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Target AF3</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #EF4035;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Partner AF3</span></div>
 <div class=\"px-4 sm:px-6 lg:px-8\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
  - 
-</h1>
+ - 
+ - <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1>
 </div>
 <div class=\"px-4 sm:px-6 lg:px-8\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
  - 
-</h1><div class=\"flex\"><div class=\"w-1/2\">
+ - 
+ - <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1><div class=\"flex\"><div class=\"w-1/2\">
 </div><div class=\"w-1/2\">
 </div></div></div>
 <div id=\"

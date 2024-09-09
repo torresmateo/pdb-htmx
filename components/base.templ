@@ -120,16 +120,15 @@ templ singleColumn(config BaseConfig) {
 	}
 }
 
-templ sidebar(config BaseConfig, side templ.Component) {
+templ sidebar(config BaseConfig, side templ.Component, side_title string) {
 	@base(config) {
 		<div>
 			{ children... }
 		</div>
 		<div
 			x-data
-			class="relative transition-opacity ease-in-out duration-1000"
+			class="relative transition-opacity ease-in-out duration-500"
 			:class="{'invisible': !$store.interactions.open}"
-			x-transition.delay.1000ms
 			aria-labelledby="slide-over-title"
 			role="dialog"
 			aria-modal="true"
@@ -145,7 +144,7 @@ templ sidebar(config BaseConfig, side templ.Component) {
             To: "opacity-0"
             -->
 			<div
-				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-1000"
+				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-500"
 				:class="$store.interactions.open ? 'opacity-100 block' : 'opacity-0'"
 				aria-hidden="true"
 			></div>
@@ -163,13 +162,13 @@ templ sidebar(config BaseConfig, side templ.Component) {
                         To: "translate-x-full"
                         -->
 						<div
-							class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-1000 sm:duration-700"
+							class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700"
 							:class="$store.interactions.open ? 'translate-x-0' : 'translate-x-full'"
 						>
 							<div class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
 								<div class="px-4 sm:px-6">
 									<div class="flex items-start justify-between">
-										<h2 class="text-base font-semibold leading-6 text-gray-900" id="slide-over-title">Panel title</h2>
+										<h2 class="text-base font-semibold leading-6 text-gray-900" id="slide-over-title">{ side_title }</h2>
 										<div class="ml-3 flex h-7 items-center">
 											<button
 												type="button"
@@ -185,7 +184,7 @@ templ sidebar(config BaseConfig, side templ.Component) {
 										</div>
 									</div>
 								</div>
-								<div class="relative mt-6 flex-1 px-4 sm:px-6">
+								<div class="relative mt-6 flex-1 px-4 sm:px-6 overflow-y-auto">
 									@side
 								</div>
 							</div>
@@ -197,27 +196,80 @@ templ sidebar(config BaseConfig, side templ.Component) {
 	}
 }
 
-templ interactionRow(i *models.Interaction, active bool) {
+templ interactionTablePdbRow(i *models.Interaction, p *models.Pdb, active bool) {
 	<tr>
 		if active {
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P1 }</td>
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P2 }</td>
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.AssociatedPdbs() }</td>
-			<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-green-600">
-				<a href={ i.URL() } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+			<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-teal-600"></td>
+			<td colspan="2" class="whitespace-nowrap px-2 py-2 text-sm text-white bg-teal-600">{ p.PdbId }</td>
+			<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-teal-600">
+				<a href={ p.PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">PDB</span></a>
 			</td>
 		} else {
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P1 }</td>
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P2 }</td>
-			<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{ i.AssociatedPdbs() }</td>
-			<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-				<a href={ i.URL() } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+			<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900 bg-gray-50"></td>
+			<td colspan="2" class="whitespace-nowrap px-2 py-2 text-sm text-gray-900 bg-gray-50">{ p.PdbId }</td>
+			<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-gray-50">
+				<a href={ p.PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">PDB</span></a>
 			</td>
 		}
 	</tr>
 }
 
-templ interactionList(interactions []*models.Interaction, active_interaction *models.Interaction) {
+templ interactionRow(i *models.Interaction, active bool, active_pdb *models.Pdb) {
+	<tr>
+		if len(i.Pdbs) > 2 {
+			if active {
+				<td id="active-interaction" class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P1 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P2 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.AssociatedPdbs() }</td>
+				<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-green-600">
+					<a href={ i.URL() } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+				</td>
+			} else {
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P1 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P2 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{ i.AssociatedPdbs() }</td>
+				<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+					<a href={ i.URL() } class="text-indigo-600 hover:text-indigo-900">View<span class="sr-only">{ i.P1 } - { i.P2 }</span></a>
+				</td>
+			}
+		} else {
+			// display only version with the pdb
+			if active {
+				<td id="active-interaction" class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P1 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.P2 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-white bg-green-600">{ i.Pdbs[0].PdbId }</td>
+				<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0 bg-green-600">
+					<a href={ i.Pdbs[0].PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View PDB</a>
+				</td>
+			} else {
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P1 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">{ i.P2 }</td>
+				<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-500">{ i.Pdbs[0].PdbId }</td>
+				<td class="relative whitespace-nowrap py-2 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+					<a href={ i.Pdbs[0].PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View PDB</a>
+				</td>
+			}
+		}
+	</tr>
+	if len(i.Pdbs) > 2 {
+		for _, pdb := range i.UniquePdbs() {
+			@interactionTablePdbRow(i, pdb, active_pdb != nil && active && pdb.PdbId == active_pdb.PdbId)
+		}
+	}
+}
+
+templ interactionList(
+	interactions []*models.Interaction,
+	active_interaction *models.Interaction,
+	active_pdb *models.Pdb,
+) {
+	if active_interaction != nil {
+		<script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var active_row = document.getElementById("active-interaction").scrollIntoView();
+            });    
+        </script>
+	}
 	<div class="px-4 sm:px-6 lg:px-8">
 		<div class="sm:flex sm:items-center">
 			<div class="sm:flex-auto">
@@ -226,8 +278,8 @@ templ interactionList(interactions []*models.Interaction, active_interaction *mo
 			</div>
 		</div>
 		<div class="mt-8 flow-root">
-			<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-				<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+			<div class="-mx-4 -my-2 overflow-x-auto flex flex-col sm:-mx-6 lg:-mx-8">
+				<div class="min-w-70 py-2 align-middle sm:px-6 lg:px-8 flex-auto overflow-y-scroll">
 					<table class="min-w-full divide-y divide-gray-300">
 						<thead>
 							<tr>
@@ -242,9 +294,9 @@ templ interactionList(interactions []*models.Interaction, active_interaction *mo
 						<tbody class="divide-y divide-gray-200 bg-white">
 							for _, i := range interactions {
 								if active_interaction != nil && i == active_interaction {
-									@interactionRow(i, true)
+									@interactionRow(i, true, active_pdb)
 								} else {
-									@interactionRow(i, false)
+									@interactionRow(i, false, active_pdb)
 								}
 							}
 						</tbody>
@@ -285,7 +337,6 @@ templ pdbList(i *models.Interaction) {
 								</td>
 							</tr>
 						}
-						<!-- More transactions... -->
 					</tbody>
 				</table>
 			</div>
@@ -295,7 +346,7 @@ templ pdbList(i *models.Interaction) {
 
 templ home(interactions []*models.Interaction) {
 	@header(false)
-	@interactionList(interactions, nil)
+	@interactionList(interactions, nil, nil)
 }
 
 templ about() {
@@ -389,16 +440,16 @@ templ pdbViewportControls(viewport_id string) {
 						</tr>
 						<tr class="divide-x divide-gray-400">
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-af3", "AF3 predictions", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-af3", "AF3", "", false)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-pio", "PIONEER2.0 predictions", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-pio", "PIONEER2.0", "", false)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-real-pred-af3", "AF3 predictions", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-real-pred-af3", "AF3", "", false)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-real-pred-pio", "PIONEER2.0 predictions", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-real-pred-pio", "PIONEER2.0", "", false)
 							</td>
 						</tr>
 					</tbody>
@@ -409,7 +460,7 @@ templ pdbViewportControls(viewport_id string) {
 }
 
 templ pdbViewport(i *models.Interaction, pdb *models.Pdb, viewport_id string, link bool) {
-	<div class="flex p-6 items-center text-align-center">
+	<div class="flex px-6 items-center text-align-center">
 		<p>
 			Aligned to { pdb.AlignedProtein }
 			if link {
@@ -431,7 +482,7 @@ templ pdbViewport(i *models.Interaction, pdb *models.Pdb, viewport_id string, li
 	</div-->
 	<div
 		id={ viewport_id }
-		class="w-full h-[calc(80dvh)] p-6"
+		class="w-full h-[calc(65dvh)] p-6"
 	></div>
 	@pdbBadges()
 }
@@ -468,7 +519,7 @@ templ pdbBadges() {
 templ pdbDisplay(i *models.Interaction, pdb *models.Pdb) {
 	@header(true)
 	<div class="px-4 sm:px-6 lg:px-8">
-		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 }</h1>
+		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
 		@pdbViewport(i, pdb, "viewport", false)
 	</div>
 	@pdbDisplayScript(i, pdb, "pdb-info")
@@ -477,7 +528,7 @@ templ pdbDisplay(i *models.Interaction, pdb *models.Pdb) {
 templ pdbPairDisplay(i *models.Interaction, pdb_a, pdb_b *models.Pdb) {
 	@header(true)
 	<div class="px-4 sm:px-6 lg:px-8">
-		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 }</h1>
+		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb_a.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb_a.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
 		<div class="flex">
 			<div class="w-1/2">
 				@pdbViewport(i, pdb_a, "viewport-a", true)
@@ -531,24 +582,28 @@ templ About() {
 	}
 }
 
-templ exampleSide(interactions []*models.Interaction, active_interaction *models.Interaction) {
-	@interactionList(interactions, active_interaction)
+templ exampleSide(
+	interactions []*models.Interaction,
+	active_interaction *models.Interaction,
+	active_pdb *models.Pdb,
+) {
+	@interactionList(interactions, active_interaction, active_pdb)
 }
 
 templ Interaction(i *models.Interaction, interactions []*models.Interaction) {
-	@sidebar(emptyBaseConfig(), exampleSide(interactions, i)) {
+	@sidebar(emptyBaseConfig(), exampleSide(interactions, i, nil), "Interactions") {
 		@interaction(i)
 	}
 }
 
 templ Pdb(i *models.Interaction, pdb *models.Pdb, interactions []*models.Interaction) {
-	@sidebar(pdbBaseConfig(), exampleSide(interactions, i)) {
+	@sidebar(pdbBaseConfig(), exampleSide(interactions, i, pdb), "Interactions") {
 		@pdbDisplay(i, pdb)
 	}
 }
 
 templ PdbPair(i *models.Interaction, pdb_a, pdb_b *models.Pdb, interactions []*models.Interaction) {
-	@sidebar(pdbPairBaseConfig(), exampleSide(interactions, i)) {
+	@sidebar(pdbPairBaseConfig(), exampleSide(interactions, i, pdb_a), "Interactions") {
 		@pdbPairDisplay(i, pdb_a, pdb_b)
 	}
 }

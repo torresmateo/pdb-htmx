@@ -47,6 +47,16 @@ func (i *Interaction) URL() templ.SafeURL {
 	return templ.SafeURL("/interaction/" + i.P1 + "_" + i.P2)
 }
 
+func (i *Interaction) UniquePdbs() []*Pdb {
+	result := []*Pdb{}
+	for _, pdb := range i.Pdbs {
+		if pdb.AlignedProtein == i.P1 {
+			result = append(result, pdb)
+		}
+	}
+	return result
+}
+
 func newInteraction(p1, p2, pdb, aligned_protein, filename string) *Interaction {
 	i := &Interaction{
 		P1:   p1,

@@ -50,8 +50,12 @@ class PdbDisplay {
         this.stage = new NGL.Stage(viewport_id);
         //this.stage.spinAnimation = this.stage.animationControls.spin([0, 1, 0], 0.005);
         this.stage.setParameters({
-            backgroundColor: "rgba(133, 133, 133, 1)",
+            //backgroundColor: "rgba(133, 133, 133, 1)",
+            backgroundColor: "rgba(255, 255, 255, 0)",
         });
+
+        this.image_basename = pdb_filename.split(".")[0];
+        console.log("image basename", this.image_basename);
 
         this.render(pdb_filename);
     }
@@ -193,15 +197,46 @@ class PdbDisplay {
         }
     }
 
+    prepareImageName() {
+        let struct = "none";
+        if (this.visibility_map["struct-af3"] && this.visibility_map["struct-real"]) {
+            struct = "aligned";
+        } else if (this.visibility_map["struct-af3"]) {
+            struct = "af3";
+        } else if (this.visibility_map["struct-real"]) {
+            struct = "real";
+        }
+
+        let pred = "-none";
+        if (this.visibility_map["real-af3"] && this.visibility_map["real-pio"]) {
+            pred = "-both";
+        } else if (this.visibility_map["real-af3"]) {
+            pred = "-af3";
+        } else if (this.visibility_map["real-pio"]) {
+            pred = "-pio";
+        }
+
+        let annot = "-none";
+        if (this.visibility_map["af3-af3"] && this.visibility_map["af3-pio"]) {
+            annot = "-a_both";
+        } else if (this.visibility_map["af3-af3"]) {
+            annot = "-a_af3";
+        } else if (this.visibility_map["af3-pio"]) {
+            annot = "-a_pio";
+        }
+        const fname = `${this.image_basename}-${struct}${pred}${annot}.jpg`
+        return fname;
+    }
+
     createFile() {
         console.log(this.stage);
-        this.stage.viewer.makeImage({ "factor": 2 })
+        this.stage.viewer.makeImage({ "factor": 2, "transparent": true })
             .then((blob) => {
                 const fileUrl = window.URL.createObjectURL(blob);
                 const anchorElement = document.createElement('a');
 
                 anchorElement.href = fileUrl;
-                anchorElement.download = 'image.jpg';
+                anchorElement.download = this.prepareImageName();
                 anchorElement.style.display = 'none';
 
                 document.body.appendChild(anchorElement);

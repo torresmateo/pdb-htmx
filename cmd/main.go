@@ -65,7 +65,6 @@ func main() {
 		sortedInteractions = append(sortedInteractions, i)
 	}
 	sort.Sort(sortedInteractions)
-	displayInteractionsStats()
 	e := echo.New()
 	e.Static("/pdb", "static/pdb")
 	e.Static("/predmeta", "static/prediction-metadata")
