@@ -30,6 +30,11 @@ func (p *Pdb) URL(i *Interaction) templ.SafeURL {
 func (p *Pdb) PairURL(i *Interaction) templ.SafeURL {
 	return templ.SafeURL("/pdbpair/" + i.P1 + "_" + i.P2 + "/" + p.PdbId)
 }
+
+func (p *Pdb) PresentationURL(i *Interaction) templ.SafeURL {
+	return templ.SafeURL("/pdbpresentation/" + i.P1 + "_" + i.P2 + "/" + p.PdbId + "/" + p.AlignedProtein)
+}
+
 func (p *Pdb) MetadataFilename(i *Interaction) string {
 	return i.P1 + "_" + i.P2 + "_" + p.PdbId + ".json"
 }

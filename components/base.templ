@@ -122,7 +122,7 @@ templ singleColumn(config BaseConfig) {
 
 templ sidebar(config BaseConfig, side templ.Component, side_title string) {
 	@base(config) {
-		<div>
+		<div class="h-full flex flex-col">
 			{ children... }
 		</div>
 		<div
@@ -376,8 +376,8 @@ templ pdbPairIncludes() {
 	<script src="/js/pioneer.js"></script>
 	<script>
     document.addEventListener("DOMContentLoaded", async function() {
-        var pdb_display_a = await PdbDisplay.init("viewport-a", "pdb-info-a", true);
-        var pdb_display_b = await PdbDisplay.init("viewport-b", "pdb-info-b", true);
+        var pdb_display_a = await PdbDisplay.init("viewport-a", true);
+        var pdb_display_b = await PdbDisplay.init("viewport-b", true);
     });    
     </script>
 }
@@ -387,7 +387,44 @@ templ pdbIncludes() {
 	<script src="/js/pioneer.js"></script>
 	<script>
     document.addEventListener("DOMContentLoaded", async function() {
-        var pdb_display = await PdbDisplay.init("viewport", "pdb-info", true);
+        var pdb_display = await PdbDisplay.init("viewport", true);
+    });    
+    </script>
+}
+
+templ pdbPresentationIncludes() {
+	<script src="https://unpkg.com/ngl@2.3.1/dist/ngl.js"></script>
+	<script src="/js/pioneer.js"></script>
+	<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        var pdb_display_a = await PdbDisplay.init("viewport-a", true);
+        var pdb_display_b = await PdbDisplay.init("viewport-b", true);
+        var pdb_display_c = await PdbDisplay.init("viewport-c", true);
+        var pdb_display_d = await PdbDisplay.init("viewport-d", true);
+        pdb_display_a.addMirror(pdb_display_b);
+        pdb_display_a.addMirror(pdb_display_c);
+        pdb_display_a.addMirror(pdb_display_d);
+
+        pdb_display_b.addMirror(pdb_display_a);
+        pdb_display_b.addMirror(pdb_display_c);
+        pdb_display_b.addMirror(pdb_display_d);
+
+        pdb_display_c.addMirror(pdb_display_a);
+        pdb_display_c.addMirror(pdb_display_b);
+        pdb_display_c.addMirror(pdb_display_d);
+
+        pdb_display_d.addMirror(pdb_display_a);
+        pdb_display_d.addMirror(pdb_display_b);
+        pdb_display_d.addMirror(pdb_display_c);
+        
+
+        const all_images_btn = document.getElementById("get-all-images");
+        all_images_btn.addEventListener("click", () => {
+            pdb_display_a.createFile();
+            pdb_display_b.createFile();
+            pdb_display_c.createFile();
+            pdb_display_d.createFile();
+        });
     });    
     </script>
 }
@@ -415,7 +452,7 @@ templ pdbToggle(id, label, description string, checked bool) {
 	</div>
 }
 
-templ pdbViewportControls(viewport_id string) {
+templ pdbViewportControls(viewport_id string, display_config PdbDisplayConfig) {
 	<div class="ml-6 flow-root">
 		<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
 			<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -423,16 +460,16 @@ templ pdbViewportControls(viewport_id string) {
 					<tbody class="divide-y divide-gray-400 bg-white">
 						<tr class="divide-x divide-gray-400">
 							<td colspan="2" class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-af3", "AF3 structure", "", true)
+								@pdbToggle(viewport_id+"-toggle-struct-af3", "AF3 structure", "", display_config.ShowAF3)
 							</td>
 							<td colspan="2" class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-real", "PDB structure", "", true)
+								@pdbToggle(viewport_id+"-toggle-struct-real", "PDB structure", "", display_config.ShowReal)
 							</td>
-							<td rowspan="2" class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
 								<button
 									id={ viewport_id + "-make-image" }
 									type="button"
-									class="-ml-px rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+									class="-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
 								>
 									Save Image
 								</button>
@@ -440,16 +477,25 @@ templ pdbViewportControls(viewport_id string) {
 						</tr>
 						<tr class="divide-x divide-gray-400">
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-af3", "AF3", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-af3", "AF3", "", display_config.ShowAnnotAF3)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-pio", "PIONEER2.0", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-af3-pred-pio", "PIONEER2.0", "", display_config.ShowAnnotPIO)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-real-pred-af3", "AF3", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-real-pred-af3", "AF3", "", display_config.ShowPredAF3)
 							</td>
 							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
-								@pdbToggle(viewport_id+"-toggle-struct-real-pred-pio", "PIONEER2.0", "", false)
+								@pdbToggle(viewport_id+"-toggle-struct-real-pred-pio", "PIONEER2.0", "", display_config.ShowPredPIO)
+							</td>
+							<td class="whitespace-nowrap px-2 py-2 text-sm text-gray-900">
+								<button
+									id={ viewport_id + "-set-mirrors" }
+									type="button"
+									class="-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+								>
+									Set Mirrors
+								</button>
 							</td>
 						</tr>
 					</tbody>
@@ -459,30 +505,22 @@ templ pdbViewportControls(viewport_id string) {
 	</div>
 }
 
-templ pdbViewport(i *models.Interaction, pdb *models.Pdb, viewport_id string, link bool) {
+templ pdbViewport(i *models.Interaction, pdb *models.Pdb, viewport_id string, link bool, display_config PdbDisplayConfig) {
 	<div class="flex px-6 items-center text-align-center">
 		<p>
 			Aligned to { pdb.AlignedProtein }
 			if link {
-				<a href={ pdb.URL(i) } class="text-indigo-600 hover:text-indigo-900">View</a>
+				| <a href={ pdb.URL(i) } class="text-indigo-600 hover:text-indigo-900">View alignment</a>
+				| <a href={ pdb.PairURL(i) } class="text-indigo-600 hover:text-indigo-900">View Pair</a>
+				| <a href={ pdb.PresentationURL(i) } class="text-indigo-600 hover:text-indigo-900">View Presentation mode</a>
 			}
 		</p>
 	</div>
-	@pdbViewportControls(viewport_id)
-	<!--div class="flex items-center justify-between p-6" aria-label="Global">
-		<span class="flex flex-1 isolate rounded-md shadow-sm">
-			<button id={ viewport_id + "-toggle-struct-af3" } type="button" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">AF3 structure</button>
-			<button id={ viewport_id + "-toggle-struct-real" } type="button" class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Real Structure</button>
-			<button id={ viewport_id + "-toggle-pred-af3" } type="button" class="relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">AF3 Predictions</button>
-			<button id={ viewport_id + "-toggle-pred-pio" } type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">PIONEER Predictions</button>
-		</span>
-		<span class="hidden lg:flex lg:gap-x-12">
-			<button id={ viewport_id + "-make-image" } type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Save Image</button>
-		</span>
-	</div-->
+	@pdbViewportControls(viewport_id, display_config)
+	@pdbDisplayScript(i, pdb, viewport_id+"-info", display_config)
 	<div
 		id={ viewport_id }
-		class="w-full h-[calc(65dvh)] p-6"
+		class="w-full h-[calc(77%)] p-6"
 	></div>
 	@pdbBadges()
 }
@@ -519,35 +557,89 @@ templ pdbBadges() {
 templ pdbDisplay(i *models.Interaction, pdb *models.Pdb) {
 	@header(true)
 	<div class="px-4 sm:px-6 lg:px-8">
-		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
-		@pdbViewport(i, pdb, "viewport", false)
+		<div class="flex flex-col">
+			<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
+			<div class="w-full flex-1 h-[calc(100dvh)]">
+				@pdbViewport(i, pdb, "viewport", true, newPdbDisplayConfig())
+			</div>
+		</div>
 	</div>
-	@pdbDisplayScript(i, pdb, "pdb-info")
+}
+
+templ pdbPresentationDisplay(i *models.Interaction, pdb *models.Pdb) {
+	@header(true)
+	<div class="px-4 sm:px-6 lg:px-8">
+		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
+		<button
+			id="get-all-images"
+			type="button"
+			class="-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
+		>
+			Save All images
+		</button>
+		<div class="flex">
+			<div class="w-1/2 flex-1 flex flex-col">
+				<div class="w-full h-[calc(45dvh)] flex-1">
+					@pdbViewport(i, pdb, "viewport-a", false, PdbDisplayConfig{ShowReal: true})
+				</div>
+				<div class="w-full h-[calc(45dvh)] flex-auto">
+					@pdbViewport(i, pdb, "viewport-b", false, PdbDisplayConfig{ShowReal: true, ShowAF3: true})
+				</div>
+			</div>
+			<div class="w-1/2 flex-1 flex flex-col">
+				<div class="w-full h-[calc(45dvh)] flex-1">
+					@pdbViewport(i, pdb, "viewport-c", false, PdbDisplayConfig{ShowReal: true, ShowPredPIO: true})
+				</div>
+				<div class="w-full h-[calc(45dvh)] flex-auto">
+					@pdbViewport(i, pdb, "viewport-d", false, PdbDisplayConfig{ShowReal: true, ShowPredAF3: true})
+				</div>
+			</div>
+		</div>
+	</div>
 }
 
 templ pdbPairDisplay(i *models.Interaction, pdb_a, pdb_b *models.Pdb) {
 	@header(true)
-	<div class="px-4 sm:px-6 lg:px-8">
+	<div class="px-4 sm:px-6 lg:px-8 flex-1 h-full">
 		<h1 class="text-base font-semibold leading-6 text-gray-900">Interaction: { i.P1 } - { i.P2 } - { pdb_a.PdbId } - <a href={ templ.SafeURL("https://www.rcsb.org/3d-view/" + pdb_a.PdbId) } class="text-indigo-600 hover:text-indigo-900">View PDB</a></h1>
-		<div class="flex">
-			<div class="w-1/2">
-				@pdbViewport(i, pdb_a, "viewport-a", true)
+		<div class="flex flex-row">
+			<div class="w-1/2 flex-1 h-[calc(100dvh)]">
+				@pdbViewport(i, pdb_a, "viewport-a", true, newPdbDisplayConfig())
 			</div>
-			<div class="w-1/2">
-				@pdbViewport(i, pdb_b, "viewport-b", true)
+			<div class="w-1/2 flex-1 h-[calc(100dvh)]">
+				@pdbViewport(i, pdb_b, "viewport-b", true, newPdbDisplayConfig())
 			</div>
 		</div>
 	</div>
-	@pdbDisplayScript(i, pdb_a, "pdb-info-a")
-	@pdbDisplayScript(i, pdb_b, "pdb-info-b")
 }
 
-templ pdbDisplayScript(i *models.Interaction, pdb *models.Pdb, divid string) {
+type PdbDisplayConfig struct {
+	ShowReal     bool
+	ShowAF3      bool
+	ShowPredPIO  bool
+	ShowPredAF3  bool
+	ShowAnnotPIO bool
+	ShowAnnotAF3 bool
+}
+
+func newPdbDisplayConfig() PdbDisplayConfig {
+	return PdbDisplayConfig{
+		ShowReal:     true,
+		ShowAF3:      true,
+		ShowPredPIO:  false,
+		ShowPredAF3:  false,
+		ShowAnnotPIO: false,
+		ShowAnnotAF3: false,
+	}
+}
+
+templ pdbDisplayScript(i *models.Interaction, pdb *models.Pdb, divid string, display_config PdbDisplayConfig) {
 	<div
 		id={ divid }
 		class="hidden"
 		data-filename={ templ.JSONString(pdb.Filename) }
 		data-metadata={ templ.JSONString(pdb.MetadataFilename(i)) }
+		data-display={ templ.JSONString(display_config) }
 	></div>
 }
 
@@ -560,6 +652,12 @@ func emptyBaseConfig() BaseConfig {
 func pdbBaseConfig() BaseConfig {
 	return BaseConfig{
 		head: pdbIncludes(),
+	}
+}
+
+func pdbPresentationBaseConfig() BaseConfig {
+	return BaseConfig{
+		head: pdbPresentationIncludes(),
 	}
 }
 
@@ -599,6 +697,12 @@ templ Interaction(i *models.Interaction, interactions []*models.Interaction) {
 templ Pdb(i *models.Interaction, pdb *models.Pdb, interactions []*models.Interaction) {
 	@sidebar(pdbBaseConfig(), exampleSide(interactions, i, pdb), "Interactions") {
 		@pdbDisplay(i, pdb)
+	}
+}
+
+templ PdbPresentation(i *models.Interaction, pdb *models.Pdb, interactions []*models.Interaction) {
+	@sidebar(pdbPresentationBaseConfig(), exampleSide(interactions, i, pdb), "Interactions") {
+		@pdbPresentationDisplay(i, pdb)
 	}
 }
 

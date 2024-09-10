@@ -1,15 +1,14 @@
 class PdbDisplay {
 
-    constructor(viewport_id, prediction_metadata, pdb_filename, interactive = true) {
-        console.log("interactive", interactive);
+    constructor(viewport_id, prediction_metadata, pdb_filename, display_config, interactive = true) {
         this.prediction_meta = prediction_metadata;
         this.visibility_map = {
-            "struct-af3": true,
-            "struct-real": true,
-            "real-af3": false,
-            "real-pio": false,
-            "af3-af3": false,
-            "af3-pio": false,
+            "af3": display_config.ShowAF3,
+            "real": display_config.ShowReal,
+            "real-af3": display_config.ShowPredAF3,
+            "real-pio": display_config.ShowPredPIO,
+            "af3-af3": display_config.ShowAnnotAF3,
+            "af3-pio": display_config.ShowAnnotPIO,
         };
 
         this.structures = {
@@ -25,6 +24,9 @@ class PdbDisplay {
             "af3-pio": [],
         };
 
+        // other PdbDisplays that would ideally share the position of this one.
+        this.mirrors = [];
+
         if (interactive) {
             this.toggle_real = document.getElementById(`${viewport_id}-toggle-struct-real`);
             this.toggle_real_af3 = document.getElementById(`${viewport_id}-toggle-struct-real-pred-af3`);
@@ -33,6 +35,7 @@ class PdbDisplay {
             this.toggle_af3_af3 = document.getElementById(`${viewport_id}-toggle-struct-af3-pred-af3`);
             this.toggle_af3_pio = document.getElementById(`${viewport_id}-toggle-struct-af3-pred-pio`);
             this.make_image = document.getElementById(`${viewport_id}-make-image`);
+            this.set_mirrors = document.getElementById(`${viewport_id}-set-mirrors`);
 
             this.toggle_real.addEventListener("click", () => {
                 this.toggleStructureCheckbox("real", this.toggle_real, this.toggle_real_af3, this.toggle_real_pio);
@@ -46,6 +49,7 @@ class PdbDisplay {
             this.toggle_af3_af3.addEventListener("click", () => { this.togglePrediction("af3-af3"); });
             this.toggle_af3_pio.addEventListener("click", () => { this.togglePrediction("af3-pio"); });
             this.make_image.addEventListener("click", () => { this.createFile(); });
+            this.set_mirrors.addEventListener("click", () => { this.setMirrors(); });
         }
         this.stage = new NGL.Stage(viewport_id);
         //this.stage.spinAnimation = this.stage.animationControls.spin([0, 1, 0], 0.005);
@@ -55,18 +59,19 @@ class PdbDisplay {
         });
 
         this.image_basename = pdb_filename.split(".")[0];
-        console.log("image basename", this.image_basename);
 
         this.render(pdb_filename);
     }
 
-    static async init(viewport_id, pdb_data_id, interactive = true) {
+    static async init(viewport_id, interactive = true) {
+        const pdb_data_id = `${viewport_id}-info`;
         const pdb_info_el = document.getElementById(pdb_data_id);
+        const display_config = JSON.parse(pdb_info_el.getAttribute('data-display'));
         const filename = JSON.parse(pdb_info_el.getAttribute('data-filename'));
         const metadata_filename = JSON.parse(pdb_info_el.getAttribute('data-metadata'));
         const response = await fetch(`/predmeta/${metadata_filename}`);
         const metadata = await response.json();
-        return new PdbDisplay(viewport_id, metadata, filename, interactive);
+        return new PdbDisplay(viewport_id, metadata, filename, display_config, interactive);
     }
 
     render(filename) {
@@ -107,7 +112,6 @@ class PdbDisplay {
                 if (component === undefined) return;
                 if (component.type !== "structure") return;
 
-                console.log(self);
                 self.structures["real"] = component.addRepresentation("cartoon", {
                     sele: "polymer and :T or :P",
                     opacity: 1,
@@ -154,6 +158,10 @@ class PdbDisplay {
                         }
                     }
                 }
+                //set visibilities for all structures 
+                for (const key in self.structures) {
+                    self.structures[key].setVisibility(self.visibility_map[key]);
+                }
                 //set visibilities for all predictions 
                 for (const key in self.predictions) {
                     for (const pred of self.predictions[key]) {
@@ -172,7 +180,7 @@ class PdbDisplay {
     }
 
     toggleComponent(method) {
-        let vis_k = `struct-${method}`
+        let vis_k = `${method}`
         this.visibility_map[vis_k] = !this.visibility_map[vis_k];
         this.structures[method].setVisibility(this.visibility_map[vis_k]);
     }
@@ -198,12 +206,13 @@ class PdbDisplay {
     }
 
     prepareImageName() {
+        console.log("visibility map", this.visibility_map);
         let struct = "none";
-        if (this.visibility_map["struct-af3"] && this.visibility_map["struct-real"]) {
+        if (this.visibility_map["af3"] && this.visibility_map["struct-real"]) {
             struct = "aligned";
-        } else if (this.visibility_map["struct-af3"]) {
+        } else if (this.visibility_map["af3"]) {
             struct = "af3";
-        } else if (this.visibility_map["struct-real"]) {
+        } else if (this.visibility_map["real"]) {
             struct = "real";
         }
 
@@ -229,7 +238,6 @@ class PdbDisplay {
     }
 
     createFile() {
-        console.log(this.stage);
         this.stage.viewer.makeImage({ "factor": 2, "transparent": true })
             .then((blob) => {
                 const fileUrl = window.URL.createObjectURL(blob);
@@ -246,6 +254,19 @@ class PdbDisplay {
 
                 window.URL.revokeObjectURL(fileUrl);
             });
+    }
+
+    addMirror(mirror) {
+        this.mirrors.push(mirror);
+    }
+
+    setMirrors() {
+        var orientationMatrix = this.stage.viewerControls.getOrientation();
+        console.log("om", orientationMatrix);
+        console.log(this.mirrors);
+        for (const mirror of this.mirrors) {
+            mirror.stage.viewerControls.orient(orientationMatrix);
+        }
     }
 }
 

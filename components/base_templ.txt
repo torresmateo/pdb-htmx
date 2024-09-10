@@ -9,7 +9,7 @@
 <!doctype html><html lang=\"en\" class=\"h-full\">
 <body class=\"h-full\">
 </body></html>
-<div>
+<div class=\"h-full flex flex-col\">
 </div><div x-data class=\"relative transition-opacity ease-in-out duration-500\" :class=\"{&#39;invisible&#39;: !$store.interactions.open}\" aria-labelledby=\"slide-over-title\" role=\"dialog\" aria-modal=\"true\"><!--\n            Background backdrop, show/hide based on slide-over state.\n\n            Entering: \"ease-in-out duration-500\"\n            From: \"opacity-0\"\n            To: \"opacity-100\"\n            Leaving: \"ease-in-out duration-500\"\n            From: \"opacity-100\"\n            To: \"opacity-0\"\n            --><div class=\"fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity ease-in-out duration-500\" :class=\"$store.interactions.open ? &#39;opacity-100 block&#39; : &#39;opacity-0&#39;\" aria-hidden=\"true\"></div><div class=\"fixed inset-0 overflow-hidden\"><div class=\"absolute inset-0 overflow-hidden\"><div class=\"pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10\"><!--\n                        Slide-over panel, show/hide based on slide-over state.\n\n                        Entering: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-full\"\n                        To: \"translate-x-0\"\n                        Leaving: \"transform transition ease-in-out duration-500 sm:duration-700\"\n                        From: \"translate-x-0\"\n                        To: \"translate-x-full\"\n                        --><div class=\"pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700\" :class=\"$store.interactions.open ? &#39;translate-x-0&#39; : &#39;translate-x-full&#39;\"><div class=\"flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl\"><div class=\"px-4 sm:px-6\"><div class=\"flex items-start justify-between\"><h2 class=\"text-base font-semibold leading-6 text-gray-900\" id=\"slide-over-title\">
 </h2><div class=\"ml-3 flex h-7 items-center\"><button type=\"button\" class=\"relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2\" @click=\"$store.interactions.open = ! $store.interactions.open\"><span class=\"absolute -inset-2.5\"></span> <span class=\"sr-only\">Close panel</span> <svg class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button></div></div></div><div class=\"relative mt-6 flex-1 px-4 sm:px-6 overflow-y-auto\">
 </div></div></div></div></div></div></div>
@@ -67,8 +67,9 @@
  - 
 </h1><p class=\"mt-2 text-sm text-gray-700\">This table shows all of the co-complexes for this interaction. For all cases where there are predictions from either model, we align the AF3 predicted structure with the PDB using a single chain as reference, that's the \"aligned interactor\" column below.</p></div></div>
 </div>
-<script src=\"https://unpkg.com/ngl@2.3.1/dist/ngl.js\"></script><script src=\"/js/pioneer.js\"></script><script>\n    document.addEventListener(\"DOMContentLoaded\", async function() {\n        var pdb_display_a = await PdbDisplay.init(\"viewport-a\", \"pdb-info-a\", true);\n        var pdb_display_b = await PdbDisplay.init(\"viewport-b\", \"pdb-info-b\", true);\n    });    \n    </script>
-<script src=\"https://unpkg.com/ngl@2.3.1/dist/ngl.js\"></script><script src=\"/js/pioneer.js\"></script><script>\n    document.addEventListener(\"DOMContentLoaded\", async function() {\n        var pdb_display = await PdbDisplay.init(\"viewport\", \"pdb-info\", true);\n    });    \n    </script>
+<script src=\"https://unpkg.com/ngl@2.3.1/dist/ngl.js\"></script><script src=\"/js/pioneer.js\"></script><script>\n    document.addEventListener(\"DOMContentLoaded\", async function() {\n        var pdb_display_a = await PdbDisplay.init(\"viewport-a\", true);\n        var pdb_display_b = await PdbDisplay.init(\"viewport-b\", true);\n    });    \n    </script>
+<script src=\"https://unpkg.com/ngl@2.3.1/dist/ngl.js\"></script><script src=\"/js/pioneer.js\"></script><script>\n    document.addEventListener(\"DOMContentLoaded\", async function() {\n        var pdb_display = await PdbDisplay.init(\"viewport\", true);\n    });    \n    </script>
+<script src=\"https://unpkg.com/ngl@2.3.1/dist/ngl.js\"></script><script src=\"/js/pioneer.js\"></script><script>\n    document.addEventListener(\"DOMContentLoaded\", async function() {\n        var pdb_display_a = await PdbDisplay.init(\"viewport-a\", true);\n        var pdb_display_b = await PdbDisplay.init(\"viewport-b\", true);\n        var pdb_display_c = await PdbDisplay.init(\"viewport-c\", true);\n        var pdb_display_d = await PdbDisplay.init(\"viewport-d\", true);\n        pdb_display_a.addMirror(pdb_display_b);\n        pdb_display_a.addMirror(pdb_display_c);\n        pdb_display_a.addMirror(pdb_display_d);\n\n        pdb_display_b.addMirror(pdb_display_a);\n        pdb_display_b.addMirror(pdb_display_c);\n        pdb_display_b.addMirror(pdb_display_d);\n\n        pdb_display_c.addMirror(pdb_display_a);\n        pdb_display_c.addMirror(pdb_display_b);\n        pdb_display_c.addMirror(pdb_display_d);\n\n        pdb_display_d.addMirror(pdb_display_a);\n        pdb_display_d.addMirror(pdb_display_b);\n        pdb_display_d.addMirror(pdb_display_c);\n        \n\n        const all_images_btn = document.getElementById(\"get-all-images\");\n        all_images_btn.addEventListener(\"click\", () => {\n            pdb_display_a.createFile();\n            pdb_display_b.createFile();\n            pdb_display_c.createFile();\n            pdb_display_d.createFile();\n        });\n    });    \n    </script>
 <div class=\"relative flex items-start\"><div class=\"flex h-6 items-center\"><input id=\"
 \" aria-describedby=\"comments-description\" type=\"checkbox\"
  checked
@@ -81,34 +82,47 @@
 </div></div>
 <div class=\"ml-6 flow-root\"><div class=\"-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8\"><div class=\"inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8\"><table class=\"min-w-full divide-y divide-red-700\"><tbody class=\"divide-y divide-gray-400 bg-white\"><tr class=\"divide-x divide-gray-400\"><td colspan=\"2\" class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td><td colspan=\"2\" class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
-</td><td rowspan=\"2\" class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\"><button id=\"
-\" type=\"button\" class=\"-ml-px rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Save Image</button></td></tr><tr class=\"divide-x divide-gray-400\"><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\"><button id=\"
+\" type=\"button\" class=\"-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Save Image</button></td></tr><tr class=\"divide-x divide-gray-400\"><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
 </td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\">
-</td></tr></tbody></table></div></div></div>
+</td><td class=\"whitespace-nowrap px-2 py-2 text-sm text-gray-900\"><button id=\"
+\" type=\"button\" class=\"-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Set Mirrors</button></td></tr></tbody></table></div></div></div>
 <div class=\"flex px-6 items-center text-align-center\"><p>Aligned to 
  
-<a href=\"
-\" class=\"text-indigo-600 hover:text-indigo-900\">View</a>
+| <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View alignment</a> | <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View Pair</a> | <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View Presentation mode</a>
 </p></div>
-<!--div class=\"flex items-center justify-between p-6\" aria-label=\"Global\">\n\t\t<span class=\"flex flex-1 isolate rounded-md shadow-sm\">\n\t\t\t<button id={ viewport_id + \"-toggle-struct-af3\" } type=\"button\" class=\"relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">AF3 structure</button>\n\t\t\t<button id={ viewport_id + \"-toggle-struct-real\" } type=\"button\" class=\"relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Real Structure</button>\n\t\t\t<button id={ viewport_id + \"-toggle-pred-af3\" } type=\"button\" class=\"relative -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">AF3 Predictions</button>\n\t\t\t<button id={ viewport_id + \"-toggle-pred-pio\" } type=\"button\" class=\"relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">PIONEER Predictions</button>\n\t\t</span>\n\t\t<span class=\"hidden lg:flex lg:gap-x-12\">\n\t\t\t<button id={ viewport_id + \"-make-image\" } type=\"button\" class=\"relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Save Image</button>\n\t\t</span>\n\t</div--><div id=\"
-\" class=\"w-full h-[calc(65dvh)] p-6\"></div>
+<div id=\"
+\" class=\"w-full h-[calc(77%)] p-6\"></div>
 <div class=\"flex mx-6\"><span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #F8981D;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Target</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #006699;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Partner</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #6EB43F;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Target AF3</span> <span class=\"inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 font-medium text-gray-900 ring-1 ring-inset ring-gray-200\"><svg class=\"h-2 w-2\" style=\"fill: #EF4035;\" viewBox=\"0 0 6 6\" aria-hidden=\"true\"><circle cx=\"3\" cy=\"3\" r=\"3\"></circle></svg> Partner AF3</span></div>
+<div class=\"px-4 sm:px-6 lg:px-8\"><div class=\"flex flex-col\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
+ - 
+ - 
+ - <a href=\"
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1><div class=\"w-full flex-1 h-[calc(100dvh)]\">
+</div></div></div>
 <div class=\"px-4 sm:px-6 lg:px-8\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
  - 
  - 
  - <a href=\"
-\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1>
-</div>
-<div class=\"px-4 sm:px-6 lg:px-8\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1><button id=\"get-all-images\" type=\"button\" class=\"-ml-px rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10\">Save All images</button><div class=\"flex\"><div class=\"w-1/2 flex-1 flex flex-col\"><div class=\"w-full h-[calc(45dvh)] flex-1\">
+</div><div class=\"w-full h-[calc(45dvh)] flex-auto\">
+</div></div><div class=\"w-1/2 flex-1 flex flex-col\"><div class=\"w-full h-[calc(45dvh)] flex-1\">
+</div><div class=\"w-full h-[calc(45dvh)] flex-auto\">
+</div></div></div></div>
+<div class=\"px-4 sm:px-6 lg:px-8 flex-1 h-full\"><h1 class=\"text-base font-semibold leading-6 text-gray-900\">Interaction: 
  - 
  - 
  - <a href=\"
-\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1><div class=\"flex\"><div class=\"w-1/2\">
-</div><div class=\"w-1/2\">
+\" class=\"text-indigo-600 hover:text-indigo-900\">View PDB</a></h1><div class=\"flex flex-row\"><div class=\"w-1/2 flex-1 h-[calc(100dvh)]\">
+</div><div class=\"w-1/2 flex-1 h-[calc(100dvh)]\">
 </div></div></div>
 <div id=\"
 \" class=\"hidden\" data-filename=\"
 \" data-metadata=\"
+\" data-display=\"
 \"></div>

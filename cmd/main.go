@@ -75,6 +75,7 @@ func main() {
 	e.GET("/about/", AboutHandler)
 	e.GET("/interaction/:interaction_id", InteractionHandler)
 	e.GET("/pdb/:interaction_id/:pdb_id/:aligned_partner", PdbHandler)
+	e.GET("/pdbpresentation/:interaction_id/:pdb_id/:aligned_partner", PdbPresentationHandler)
 	e.GET("/pdbpair/:interaction_id/:pdb_id", PdbPairHandler)
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -118,6 +119,25 @@ func PdbHandler(c echo.Context) error {
 		for _, pdb := range interaction.Pdbs {
 			if pdb.PdbId == pdbId && pdb.AlignedProtein == alignedPartner {
 				return Render(c, http.StatusOK, components.Pdb(interaction, pdb, sortedInteractions))
+			}
+		}
+		return c.String(404, "PDB entry not found")
+	}
+	return c.String(404, "Interaction not found")
+
+}
+
+func PdbPresentationHandler(c echo.Context) error {
+	interactionId := c.Param("interaction_id")
+	pdbId := c.Param("pdb_id")
+	alignedPartner := c.Param("aligned_partner")
+	log.Println("interactionId", interactionId)
+	log.Println("pdbId", pdbId)
+	log.Println("alignedPartner", alignedPartner)
+	if interaction, ok := interactions[interactionId]; ok {
+		for _, pdb := range interaction.Pdbs {
+			if pdb.PdbId == pdbId && pdb.AlignedProtein == alignedPartner {
+				return Render(c, http.StatusOK, components.PdbPresentation(interaction, pdb, sortedInteractions))
 			}
 		}
 		return c.String(404, "PDB entry not found")
